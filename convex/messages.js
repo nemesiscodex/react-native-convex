@@ -11,9 +11,12 @@ const DEFAULT_AUTHOR = "Guest";
 
 export const list = query({
   handler: async (ctx) => {
-    // Return only the latest 10 messages by creation time.
-    // If your Convex version requires it, ensure an index supports ordering by _creationTime.
-    return await ctx.db.query("messages").order("desc").take(MAX_MESSAGES);
+    // Get the latest 10 messages by creation time (descending order)
+    const latestMessages = await ctx.db.query("messages").order("desc").take(MAX_MESSAGES);
+    
+    // Reverse the array so newest messages appear at the bottom
+    // This gives us the latest 10 messages in chronological order (oldest to newest)
+    return latestMessages.reverse();
   },
 });
 

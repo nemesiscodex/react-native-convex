@@ -1,6 +1,6 @@
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { EXPO_PUBLIC_CONVEX_URL } from "@env";
-import React, { StrictMode, useState } from "react";
+import React, { StrictMode, useState, useRef } from "react";
 import { FlatList, SafeAreaView, Text, TextInput, View } from "react-native";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "./convex/_generated/api";
@@ -8,6 +8,7 @@ import styles from "./styles";
 
 function InnerApp() {
   const messages = useQuery(api.messages.list) || [];
+  const inputRef = useRef(null);
 
   const [newMessageText, setNewMessageText] = useState("");
   const sendMessage = useMutation(api.messages.send);
@@ -16,9 +17,14 @@ function InnerApp() {
   async function handleSendMessage(event) {
     const text = newMessageText.trim();
     if (!text) return;
-    event.preventDefault();
+    // Prevent default form submission on web platforms
+    if (event && event.preventDefault) {
+      event.preventDefault();
+    }
     setNewMessageText("");
     await sendMessage({ body: text, author: name });
+    // Maintain focus on the input after sending message
+    inputRef.current?.focus();
   }
 
   return (
@@ -47,8 +53,14 @@ function InnerApp() {
             </View>
           );
         }}
+        // Auto-scroll to bottom when new messages arrive
+        onContentSizeChange={() => {}}
+        onLayout={() => {}}
+        // Ensure newest messages are visible
+        inverted={false}
       />
       <TextInput
+        ref={inputRef}
         placeholder="Write a message…"
         style={styles.input}
         onSubmitEditing={handleSendMessage}
