@@ -14,9 +14,11 @@ function InnerApp() {
 
   const [name] = useState(() => "User " + Math.floor(Math.random() * 10000));
   async function handleSendMessage(event) {
+    const text = newMessageText.trim();
+    if (!text) return;
     event.preventDefault();
     setNewMessageText("");
-    await sendMessage({ body: newMessageText, author: name });
+    await sendMessage({ body: text, author: name });
   }
 
   return (
@@ -28,8 +30,9 @@ function InnerApp() {
         </Text>
       </View>
       <FlatList
-        data={messages.slice(-10)}
+        data={messages}
         testID="MessagesList"
+        keyExtractor={(item) => item._id}
         renderItem={(x) => {
           const message = x.item;
           return (

@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "npx convex dev --once && concurrently -r npm:expo npm:db",
-    "expo": "expo start",
+    "start": "npx convex dev --once && concurrently -r npm:start:expo npm:db",
+    "start:expo": "expo start",
+    "doctor": "npx expo-doctor",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -16,14 +17,15 @@
     "concurrently": "^9.2.0",
     "expo": "~53.0.20",
     "expo-status-bar": "~2.2.3",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
     "react-native": "0.79.5",
     "react-native-dotenv": "^3.4.11",
     "react-native-get-random-values": "~1.11.0",
     "react-native-web": "^0.20.0"
   },
   "devDependencies": {
+    "expo-doctor": "^1.17.0",
     "@babel/core": "^7.28.3"
   },
   "private": true
