@@ -23,7 +23,7 @@ export const list = query({
 export const send = mutation({
   args: {
     body: v.string(),
-    author: v.union(v.string(), v.null()),
+    author: v.optional(v.union(v.string(), v.null())),
   },
   handler: async (ctx, { body, author }) => {
     // Validate and sanitize body
@@ -60,14 +60,8 @@ export const send = mutation({
       author: sanitizedAuthor 
     };
 
-    // Insert message and return the inserted document
+    // Insert message and return the actual stored document (with real _creationTime)
     const messageId = await ctx.db.insert("messages", message);
-    
-    // Return the inserted message data
-    return {
-      _id: messageId,
-      ...message,
-      _creationTime: Date.now(), // Approximate creation time
-    };
+    return await ctx.db.get(messageId);
   },
 });
